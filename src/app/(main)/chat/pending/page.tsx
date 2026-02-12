@@ -1,0 +1,105 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+'use client';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { BeatLoader } from 'react-spinners';
+import MessageLeft from '@/components/Chatscreen/MessageLeft';
+import MessageRight from '@/components/Chatscreen/MessageRight';
+
+export default function PendingPage() {
+  const router = useRouter();
+  const [userQuestion, setUserQuestion] = useState('');
+  const [isStreaming, setIsStreaming] = useState(true);
+
+  useEffect(() => {
+    const pendingQuestion = sessionStorage.getItem('pendingQuestion');
+
+    if (!pendingQuestion) {
+      router.push('/');
+      return;
+    }
+
+    setUserQuestion(pendingQuestion);
+
+    // Simulate API call with streaming
+    const timer = setTimeout(() => {
+      const mockChatId = 'chat-' + Date.now();
+      const mockResponse = 'This is a mock response to your question.';
+
+      sessionStorage.setItem(
+        'currentChatMessages',
+        JSON.stringify([
+          { role: 'user', content: pendingQuestion },
+          { role: 'assistant', content: mockResponse },
+        ])
+      );
+
+      setIsStreaming(false);
+      router.push(`/chat/${mockChatId}`);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  return (
+    // <div
+    //   className="h-full flex flex-col"
+    //   style={{
+    //     background: 'linear-gradient(135deg, #FFFFFF 0%, #ffefef 50%, #ffe6e6 100%)',
+    //   }}
+    // >
+     <div
+        className="h-full flex flex-col bg-repeat"
+        style={{
+            backgroundImage: 'url(/Images/BackgroundImage.png)',
+            backgroundSize: 'auto',
+            backgroundPosition: '0 0',
+        }}
+        >
+      {/* Messages Container */}
+      <div className="flex-1 mx-auto w-full px-8 overflow-hidden mb-[30px] mt-[10px]">
+        <div className="h-full overflow-y-auto custom-scrollbar pb-4">
+          <div className="py-4">
+            {userQuestion && <MessageRight content={userQuestion} />}
+            <MessageLeft content="" isLoading={true} />
+          </div>
+        </div>
+      </div>
+
+      {/* Footer - Disabled Input - Fixed to bottom */}
+      <div className="flex-shrink-0 mx-auto w-full px-8 pb-8">
+        <div className="bg-white rounded-[12px] shadow-[0px_0px_12px_0px_#0000001A]">
+          <div className="pl-[12px] pr-[14px] py-[12px]">
+            <div className="flex items-start pl-1 text-sm justify-between gap-2">
+              <Image
+                src="/Images/Star.svg"
+                alt="Star"
+                width={20}
+                height={20}
+                className="flex-shrink-0 mt-0.5"
+              />
+              <textarea
+                disabled={true}
+                placeholder="What would you like to know?"
+                rows={1}
+                className="flex-1 text-black custom-scrollbar font-normal text-[14px] leading-[22px] bg-transparent border-none outline-none resize-none overflow-hidden min-h-[22px] max-h-[88px] opacity-50"
+                style={{
+                  height: 'auto',
+                  minHeight: '22px',
+                  maxHeight: '88px',
+                }}
+              />
+              <button
+                disabled={true}
+                className="flex items-center justify-end rounded-full transition-colors duration-200 flex-shrink-0 opacity-50"
+              >
+                <BeatLoader size={6} color="#8a162c" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
