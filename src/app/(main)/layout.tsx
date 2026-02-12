@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@/components/Sidebar';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

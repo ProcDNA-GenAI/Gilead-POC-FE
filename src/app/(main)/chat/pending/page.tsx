@@ -10,7 +10,6 @@ import MessageRight from '@/components/Chatscreen/MessageRight';
 export default function PendingPage() {
   const router = useRouter();
   const [userQuestion, setUserQuestion] = useState('');
-  const [isStreaming, setIsStreaming] = useState(true);
 
   useEffect(() => {
     const pendingQuestion = sessionStorage.getItem('pendingQuestion');
@@ -21,42 +20,17 @@ export default function PendingPage() {
     }
 
     setUserQuestion(pendingQuestion);
-
-    // Simulate API call with streaming
-    const timer = setTimeout(() => {
-      const mockChatId = 'chat-' + Date.now();
-      const mockResponse = 'This is a mock response to your question.';
-
-      sessionStorage.setItem(
-        'currentChatMessages',
-        JSON.stringify([
-          { role: 'user', content: pendingQuestion },
-          { role: 'assistant', content: mockResponse },
-        ])
-      );
-
-      setIsStreaming(false);
-      router.push(`/chat/${mockChatId}`);
-    }, 2000);
-
-    return () => clearTimeout(timer);
   }, [router]);
 
   return (
-    // <div
-    //   className="h-full flex flex-col"
-    //   style={{
-    //     background: 'linear-gradient(135deg, #FFFFFF 0%, #ffefef 50%, #ffe6e6 100%)',
-    //   }}
-    // >
-     <div
-        className="h-full flex flex-col bg-repeat"
-        style={{
-            backgroundImage: 'url(/Images/BackgroundImage.png)',
-            backgroundSize: 'auto',
-            backgroundPosition: '0 0',
-        }}
-        >
+    <div
+      className="h-full flex flex-col bg-repeat"
+      style={{
+        backgroundImage: 'url(/Images/BackgroundImage.png)',
+        backgroundSize: 'auto',
+        backgroundPosition: '0 0',
+      }}
+    >
       {/* Messages Container */}
       <div className="flex-1 mx-auto w-full px-8 overflow-hidden mb-[30px] mt-[10px]">
         <div className="h-full overflow-y-auto custom-scrollbar pb-4">

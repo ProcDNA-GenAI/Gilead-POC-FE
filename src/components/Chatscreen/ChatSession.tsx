@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import MessageLeft from './MessageLeft';
 import MessageRight from './MessageRight';
+import { queryChat, getOrCreateSessionId } from '@/utils/api/chat';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -65,7 +66,7 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
 
   const handleSubmit = async () => {
     const text = inputValue.trim();
-    if (!text) return;
+    if (!text || isLoading) return;
 
     setInputValue('');
     resetTextareaHeight();
@@ -75,14 +76,43 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
       content: text,
     };
 
-    const mockBotResponse: Message = {
-      role: 'assistant',
-      content: 'This is a mock response to your message.',
-    };
+    // Add user message immediately
+    const updatedMessagesWithUser = [...messages, userMessage];
+    setMessages(updatedMessagesWithUser);
+    sessionStorage.setItem('currentChatMessages', JSON.stringify(updatedMessagesWithUser));
 
-    const updatedMessages = [...messages, userMessage, mockBotResponse];
-    setMessages(updatedMessages);
-    sessionStorage.setItem('currentChatMessages', JSON.stringify(updatedMessages));
+    // Show loading state
+    setIsLoading(true);
+
+    try {
+      const sessionId = getOrCreateSessionId();
+      const answer = await queryChat({
+        question: text,
+        sessionId,
+      });
+
+      const botMessage: Message = {
+        role: 'assistant',
+        content: answer,
+      };
+
+      const updatedMessages = [...updatedMessagesWithUser, botMessage];
+      setMessages(updatedMessages);
+      sessionStorage.setItem('currentChatMessages', JSON.stringify(updatedMessages));
+    } catch (error) {
+      console.error('Failed to get response:', error);
+      
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: 'Sorry, I encountered an error processing your request. Please try again.',
+      };
+
+      const updatedMessages = [...updatedMessagesWithUser, errorMessage];
+      setMessages(updatedMessages);
+      sessionStorage.setItem('currentChatMessages', JSON.stringify(updatedMessages));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -93,20 +123,14 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
   };
 
   return (
-    // <div
-    //   className="h-full flex flex-col"
-    //   style={{
-    //     background: 'linear-gradient(135deg, #FFFFFF 0%, #ffefef 50%, #ffe6e6 100%)',
-    //   }}
-    // >
     <div
-        className="flex flex-col h-full bg-repeat"
-        style={{
-            backgroundImage: 'url(/Images/BackgroundImage.png)',
-            backgroundSize: 'auto',
-            backgroundPosition: '0 0',
-        }}
-        >
+      className="flex flex-col h-full bg-repeat"
+      style={{
+        backgroundImage: 'url(/Images/BackgroundImage.png)',
+        backgroundSize: 'auto',
+        backgroundPosition: '0 0',
+      }}
+    >
       {/* Messages Container */}
       <div className="flex-1 mx-auto w-full px-8 overflow-hidden mb-[30px] mt-[10px] min-h-0">
         <div
@@ -141,6 +165,7 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
                   }
                   return <MessageLeft key={index} content={message.content} isLoading={false} />;
                 })}
+                {isLoading && <MessageLeft content="" isLoading={true} />}
                 <div ref={messagesEndRef} />
               </>
             )}
