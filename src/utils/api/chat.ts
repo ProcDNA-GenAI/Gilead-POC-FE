@@ -8,14 +8,15 @@ interface QueryParams {
   sessionId: string;
 }
 
-const getApiBaseUrl = (): string => {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-};
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
+if (!API_BASE_URL) {
+  throw new Error('NEXT_PUBLIC_SERVER_URL is not defined');
+}
 
 export const queryChat = async ({ question, sessionId }: QueryParams): Promise<string> => {
   try {
-    const baseUrl = getApiBaseUrl();
-    const url = `${baseUrl}/query?question=${encodeURIComponent(question)}&session_id=${sessionId}`;
+    const url = `${API_BASE_URL}/query?question=${encodeURIComponent(question)}&session_id=${sessionId}`;
     
     const response = await fetch(url, {
       method: 'POST',
