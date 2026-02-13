@@ -37,17 +37,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
-      const userData = { username };
-      setUser(userData);
-      setIsAuthenticated(true);
-      sessionStorage.setItem('user', JSON.stringify(userData));
+const login = (username: string, password: string): boolean => {
+  if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
+    const userData = { username };
+    setUser(userData);
+    setIsAuthenticated(true);
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    
+    // Check if there's a redirect path stored
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+    if (redirectPath) {
+      sessionStorage.removeItem('redirectAfterLogin');
+      router.push(redirectPath);
+    } else {
       router.push('/');
-      return true;
     }
-    return false;
-  };
+    
+    return true;
+  }
+  return false;
+};
+
 
   const logout = () => {
     setUser(null);
