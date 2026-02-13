@@ -6,6 +6,6 @@ export const PRESET_QUESTIONS = [
 ];
 
 export const MOCK_USER = {
-  Username: "Ronit Das",
+  Username: "Demo User",
   ProfileUrl: "", // Leave empty to show initials
 };
