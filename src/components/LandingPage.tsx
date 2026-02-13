@@ -112,8 +112,7 @@ const LandingPage = () => {
             Hi User
           </h1>
           <p className="text-black text-[18px] mt-2 font-normal leading-6">
-            I am your dedicated expert in disease areas, here to empower your research and
-            analysis
+            I am your dedicated field assistant, here to empower you with intelligent insights.
           </p>
 
           {/* Input Box */}
