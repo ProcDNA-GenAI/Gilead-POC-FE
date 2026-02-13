@@ -1,6 +1,7 @@
 interface QueryResponse {
-  answer?: string;
-  // Handle if backend returns string directly
+  success: boolean;
+  response: string;
+  error?: string;
 }
 
 interface QueryParams {
@@ -29,27 +30,21 @@ export const queryChat = async ({ question, sessionId }: QueryParams): Promise<s
       throw new Error(`API Error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: QueryResponse = await response.json();
     
-    // Handle both {"answer": "..."} and direct string response
-    if (typeof data === 'string') {
-      return data;
+    // Backend returns {success: true/false, response: "text", error?: "..."}
+    if (data.success) {
+      return data.response;
+    } else {
+      // Handle error case
+      throw new Error(data.error || data.response || 'Unknown error occurred');
     }
-    
-    if (data.answer) {
-      return data.answer;
-    }
-    
-    // If response has a different structure, log it
-    console.log('Unexpected response format:', data);
-    throw new Error('Unexpected response format from API');
     
   } catch (error) {
     console.error('Query API Error:', error);
     throw error;
   }
 };
-
 // Generate a session ID for the user (can be stored in localStorage)
 export const getOrCreateSessionId = (): string => {
   if (typeof window === 'undefined') return '1234';

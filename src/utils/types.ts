@@ -8,3 +8,9 @@ export interface UserIconProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
+
+export interface Chat {
+  id: string;
+  title: string;
+  timestamp: string;
+}
