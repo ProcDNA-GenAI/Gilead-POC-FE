@@ -183,7 +183,7 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
                 alt="Star"
                 width={20}
                 height={20}
-                className="flex-shrink-0 mt-0.5"
+                className="flex-shrink-0 "
               />
               <textarea
                 value={inputValue}
@@ -207,7 +207,7 @@ const ChatSession: React.FC<ChatSessionProps> = ({ chatId }) => {
               />
               <button
                 onClick={handleSubmit}
-                className="flex cursor-pointer items-center justify-end rounded-full transition-colors duration-200 flex-shrink-0"
+                className="flex mt-0.5 cursor-pointer items-center justify-end rounded-full transition-colors duration-200 flex-shrink-0"
                 disabled={!inputValue.trim() || isLoading}
               >
                 <Image src="/Images/SendIcon.svg" alt="Submit" width={18} height={22} />

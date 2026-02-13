@@ -51,7 +51,7 @@ export default function PendingPage() {
                 alt="Star"
                 width={20}
                 height={20}
-                className="flex-shrink-0 mt-0.5"
+                className="flex-shrink-0 "
               />
               <textarea
                 disabled={true}
@@ -68,7 +68,7 @@ export default function PendingPage() {
                 disabled={true}
                 className="flex items-center justify-end rounded-full transition-colors duration-200 flex-shrink-0 opacity-50"
               >
-                <BeatLoader size={6} color="#8a162c" />
+                <BeatLoader size={6} color="#8a162c" className='mt-2'/>
               </button>
             </div>
           </div>
