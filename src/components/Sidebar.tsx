@@ -119,10 +119,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggleCollapse
                     return (
                       <button
                         key={chat.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleChatClick(chat.id);
-                        }}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   handleChatClick(chat.id);
+                        // }}
                         className={`w-full text-left py-3 rounded-lg transition-colors cursor-pointer group ${
                           isActive
                             ? 'bg-red-50 border border-red-100'
